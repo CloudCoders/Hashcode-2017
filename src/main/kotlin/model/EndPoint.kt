@@ -4,5 +4,4 @@ import jdk.nashorn.internal.ir.RuntimeNode
 
 class EndPoint(
         val id: Int,
-        val connections: Map<Int, CacheServer>,
-        val requests: List<Request>)
+        val connections: Map<Int, CacheServer>)

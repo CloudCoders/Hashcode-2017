@@ -12,7 +12,7 @@ class Balancer {
 
     private fun sortVideosByRequests(videos: List<Video>): List<Video> {
         videos.forEach { it.requests.sortedByDescending { it.requests } }
-        return videos.sortedByDescending { it.requests[0].requests }
+        return videos.sortedByDescending { it.requests.get(0).requests }
     }
 
     private fun canPutVideoInCacheServer(video: Video, cacheServer: CacheServer): Boolean =
@@ -21,15 +21,18 @@ class Balancer {
     private fun getCacheServersSortedByLatency(endPoint: EndPoint): List<CacheServer> =
             endPoint.connections.keys.sorted().map { endPoint.connections[it]!! }
 
-    fun balance(videos: List<Video>, endPoints: List<EndPoint>, cacheServers: List<CacheServer>): List<CacheServer> {
+    fun balance(videos: List<Video>, cacheServers: List<CacheServer>): List<CacheServer> {
         val sortedVideos = sortVideosByRequests(getLargeEnoughVideos(videos, cacheServers[0].size))
         var resultCaches = emptyList<CacheServer>()
 
         sortedVideos.forEach { video ->
-            video.requests.forEach { req ->
+            var availableCacheServer: CacheServer? = null
+            for (req in video.requests) {
                 val connectedCacheServers = getCacheServersSortedByLatency(req.fromEndPoint)
-                connectedCacheServers.first { canPutVideoInCacheServer(video, it) }
+                availableCacheServer = connectedCacheServers.first { canPutVideoInCacheServer(video, it) }
             }
+            availableCacheServer?.videos!!.plus(video)
+            resultCaches.plus(availableCacheServer)
         }
 
         return resultCaches
