@@ -1,5 +1,5 @@
 package model
 
 class CacheServer(val id: Int,
-                  val size: Int,
-                  val videos: List<Video>)
+                  val capacity: Int,
+                  val videos: MutableList<Video> = mutableListOf())
