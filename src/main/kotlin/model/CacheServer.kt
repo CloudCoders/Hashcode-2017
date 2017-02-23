@@ -1,3 +1,4 @@
 package model
 
-class CacheServer(val id: Int)
+class CacheServer(val id: Int,
+                  val latency: Int)
