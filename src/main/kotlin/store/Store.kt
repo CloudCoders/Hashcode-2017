@@ -18,7 +18,8 @@ class Store() {
         scanner.nextLine()
 
         val cacheServers = Array<CacheServer>(nCacheServers) {
-            index -> CacheServer(id = index, capacity = nCapacities)
+            index ->
+            CacheServer(id = index, capacity = nCapacities)
         }
 
         val videos = (0..(nVideos - 1)).map {
@@ -32,7 +33,7 @@ class Store() {
             val nCaches = scanner.nextInt()
             scanner.nextLine()
 
-            for(i in (0..(nCaches - 1))) {
+            for (i in (0..(nCaches - 1))) {
                 val cacheId = scanner.nextInt()
                 val latency = scanner.nextInt()
                 var cacheServer = cacheServers.find { it.id == cacheId }!!
