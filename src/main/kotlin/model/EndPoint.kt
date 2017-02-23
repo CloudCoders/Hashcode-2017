@@ -2,9 +2,8 @@ package model
 
 class EndPoint(
         val id: Int,
-        val latency: Int,
-        val cacheServers: MutableList<CacheServer> = mutableListOf(),
-        val requests: MutableList<Request> = mutableListOf()) {
+        val connections: Map<Int, CacheServer>,
+        val requests: MutableList<Request> = = mutableListOf())
 
     fun add(request: Request) {
         requests.add(request)
