@@ -1,4 +1,4 @@
-package store
+/*package store
 
 import model.*
 import java.io.File
@@ -58,4 +58,4 @@ class Store() {
     }
 
 
-}
+}*/
