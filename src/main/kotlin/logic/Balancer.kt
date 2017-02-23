@@ -16,13 +16,15 @@ class Balancer {
     }
 
     private fun canPutVideoInCacheServer(video: Video, cacheServer: CacheServer): Boolean =
-            video.sizeMB <= cacheServer.size
+            video.sizeMB <= cacheServer.capacity
 
-    private fun getCacheServersSortedByLatency(endPoint: EndPoint): List<CacheServer> =
-            endPoint.connections.keys.sorted().map { endPoint.connections[it]!! }
+    private fun getCacheServersSortedByLatency(endPoint: EndPoint): List<CacheServer> {
+        return emptyList()
+    }
+
 
     fun balance(videos: List<Video>, endPoints: List<EndPoint>, cacheServers: List<CacheServer>): List<CacheServer> {
-        val sortedVideos = sortVideosByRequests(getLargeEnoughVideos(videos, cacheServers[0].size))
+        val sortedVideos = sortVideosByRequests(getLargeEnoughVideos(videos, cacheServers[0].capacity))
         var resultCaches = emptyList<CacheServer>()
 
         sortedVideos.forEach { video ->

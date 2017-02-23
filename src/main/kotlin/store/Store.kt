@@ -3,7 +3,6 @@ package store
 import model.*
 import java.io.File
 import java.util.*
-import javax.xml.ws.Endpoint
 
 class Store() {
 
@@ -18,44 +17,42 @@ class Store() {
         val nCapacities = scanner.nextInt()
         scanner.nextLine()
 
+        val cacheServers = Array<CacheServer>(nCacheServers) {
+            index -> CacheServer(id = index, capacity = nCapacities)
+        }
+
         val videos = (0..(nVideos - 1)).map {
             Video(id = it, sizeMB = scanner.nextInt())
         }
-        scanner.nextLine()
 
         val endPoints = (0..(nEndpoints - 1)).map {
-            val endPoint = EndPoint(
-                    id = it,
-                    latency = scanner.nextInt()
-            )
+            scanner.nextLine()
+            val endPoint = EndPoint(id = it, lantency = scanner.nextInt())
 
             val nCaches = scanner.nextInt()
             scanner.nextLine()
 
-            endPoint.add((0..(nCaches - 1)).map {
-                CacheServer(
-                        id = scanner.nextInt(),
-                        latency = scanner.nextInt())
-            })
-
-            scanner.nextLine()
+            for(i in (0..(nCaches - 1))) {
+                val cacheId = scanner.nextInt()
+                val latency = scanner.nextInt()
+                var cacheServer = cacheServers.find { it.id == cacheId }!!
+                endPoint.connections.put(cacheServer, latency)
+            }
             endPoint
         }
 
-        for (i in (0..nRequests)) {
+        for (i in (0..(nRequests - 1))) {
             val videoId = scanner.nextInt()
             val endPointId = scanner.nextInt()
             val requests = scanner.nextInt()
 
-            val video = videos.find { it.id == videoId }!!
-            val request = Request(requests = requests, video = video)
             val endPoint = endPoints.find { it.id == endPointId}!!
-            endPoint.add(request)
+            val request = Request(requests = requests, fromEndPoint = endPoint)
+            videos.find { it.id == videoId }!!.requests.add(request)
+            if (scanner.hasNextLine()) scanner.nextLine()
         }
 
-
-        return DataCenter(3, emptyList())
+        return DataCenter(videos)
     }
-
 
 }
